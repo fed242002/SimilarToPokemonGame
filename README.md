@@ -1,1 +1,3 @@
 # SimilarToPokemonGame
+
+buat game pokemon
