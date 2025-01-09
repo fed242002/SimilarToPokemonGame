@@ -76,7 +76,7 @@ void displayPokemons(const vector<pokemon>& pokemons) {
         cout << i + 1 << ". " << pokemons[i].name << endl
              << "Health: " << pokemons[i].health << endl
              << "Type: " << pokemons[i].type << endl
-             << "Status: " <<(pokemons[i].alive ? "Alive" : "Dead") << endl << endl;
+             << "Status: " <<(pokemons[i].alive ? "Alive" : "Fainted") << endl << endl;
     }
 }
 
@@ -211,22 +211,27 @@ bool allFainted(const vector<pokemon>& pokemons)
     return true;
 }
 
+void updatePokemonStatus(pokemon& p) {
+    if (p.health <= 0) {
+        p.alive = false;
+        p.health = 0; // Ensure health doesn't drop below zero
+    } else {
+        p.alive = true;
+    }
+}
 void playGame(PlayerScore &a, vector<pokemon> playerPokemons, vector<pokemon> computerPokemons) {
     bool gameOver = false, playerTurn = true;
     system("cls");
     srand(time(0));
-
-    int playerPokemonCount = playerPokemons.size();
-    int computerPokemonCount = computerPokemons.size();
 
     do {
         // Player selects their Pokémon
         int playerChoice;
         do {
             displayPokemons(playerPokemons);
-            cout << "Choose an alive Pokemon: ";
-            playerChoice = 0;
+            cout << "Choose Pokemon to fight: ";
             cin >> playerChoice;
+
             if (playerChoice < 1 || playerChoice > playerPokemons.size() || !playerPokemons[playerChoice - 1].alive) {
                 cout << "Invalid choice or Pokemon is fainted. Please choose again.\n";
             }
@@ -243,18 +248,18 @@ void playGame(PlayerScore &a, vector<pokemon> playerPokemons, vector<pokemon> co
 
         pokemon& computerPokemon = computerPokemons[computerChoice];
 
-        // Display selected Pokémon details
-        cout << a.name << "'s Pokemon Details " << endl;
-        cout << "Name: " << playerPokemon.name << endl
-             << "Health: " << playerPokemon.health << endl
-             << "Type: " << playerPokemon.type << endl << endl;
-
-        cout << "Computer's Pokemon Details " << endl;
-        cout << "Name: " << computerPokemon.name << endl
-             << "Health: " << computerPokemon.health << endl
-             << "Type: " << computerPokemon.type << endl << endl;
-
         while (!gameOver) {
+            // Display selected Pokémon details
+            cout << a.name << "'s Pokemon Details " << endl;
+            cout << "Name: " << playerPokemon.name << endl
+                 << "Health: " << playerPokemon.health << endl
+                 << "Type: " << playerPokemon.type << endl << endl;
+
+            cout << "Computer's Pokemon Details " << endl;
+            cout << "Name: " << computerPokemon.name << endl
+                 << "Health: " << computerPokemon.health << endl
+                 << "Type: " << computerPokemon.type << endl << endl;
+
             if (playerTurn) {
                 // Player's turn
                 cout << a.name << "'s turn" << endl;
@@ -274,13 +279,10 @@ void playGame(PlayerScore &a, vector<pokemon> playerPokemons, vector<pokemon> co
                 } while (skillChoice < 1 || skillChoice > playerPokemon.skills.size());
 
                 computerPokemon.health -= playerPokemon.skills[skillChoice - 1].damage;
-                updatePokemonStatus(computerPokemon);
-                cout << "You used " << playerPokemon.skills[skillChoice - 1].name << "!" << endl;
-                cout << "Computer's Pokemon Health: " << computerPokemon.health << endl;
+                cout << "You used " << playerPokemon.skills[skillChoice - 1].name << "!" << endl << endl;
 
+                updatePokemonStatus(computerPokemon);
                 if (!computerPokemon.alive) {
-                    computerPokemonCount--;
-                    a.score += 100;
                     cout << "Computer's Pokemon fainted!\n";
 
                     if (allFainted(computerPokemons)) {
@@ -292,6 +294,7 @@ void playGame(PlayerScore &a, vector<pokemon> playerPokemons, vector<pokemon> co
                     do {
                         computerChoice = rand() % computerPokemons.size();
                     } while (!computerPokemons[computerChoice].alive);
+
                     computerPokemon = computerPokemons[computerChoice];
                     cout << "Computer switched to: " << computerPokemon.name << endl;
                 }
@@ -301,14 +304,12 @@ void playGame(PlayerScore &a, vector<pokemon> playerPokemons, vector<pokemon> co
                 // Computer's turn
                 cout << "Computer's turn" << endl;
                 int computerSkillChoice = rand() % computerPokemon.skills.size();
-                cout << "Computer used " << computerPokemon.skills[computerSkillChoice].name << "!" << endl;
+                cout << "Computer used " << computerPokemon.skills[computerSkillChoice].name << "!" << endl << endl;
 
                 playerPokemon.health -= computerPokemon.skills[computerSkillChoice].damage;
                 updatePokemonStatus(playerPokemon);
-                cout << "Your Pokemon Health: " << playerPokemon.health << endl;
 
                 if (!playerPokemon.alive) {
-                    playerPokemonCount--;
                     cout << "Your Pokemon fainted!\n";
 
                     if (allFainted(playerPokemons)) {
@@ -321,6 +322,7 @@ void playGame(PlayerScore &a, vector<pokemon> playerPokemons, vector<pokemon> co
                         displayPokemons(playerPokemons);
                         cout << "Choose an alive Pokemon: ";
                         cin >> playerChoice;
+
                         if (playerChoice < 1 || playerChoice > playerPokemons.size() || !playerPokemons[playerChoice - 1].alive) {
                             cout << "Invalid choice or Pokemon is fainted. Please choose again.\n";
                         }
@@ -329,11 +331,13 @@ void playGame(PlayerScore &a, vector<pokemon> playerPokemons, vector<pokemon> co
                     playerPokemon = playerPokemons[playerChoice - 1];
                     cout << "You switched to: " << playerPokemon.name << endl;
                 }
+
                 playerTurn = true;
             }
         }
 
     } while (!gameOver);
+
 
     ofstream outFile("leaderboard.txt", ios::app);
     if (outFile) {
@@ -343,9 +347,6 @@ void playGame(PlayerScore &a, vector<pokemon> playerPokemons, vector<pokemon> co
         cout << "Error saving to leaderboard!" << endl;
     }
 }
-
-
-
 
 void leaderBoard(PlayerScore a)
 {
