@@ -9,61 +9,90 @@
 #include <iomanip>
 #include <cstdlib>
 
-struct pokemon {
-    string name;
-    string type;
-    int health;
-    vector<Skill> skills;
-
-    pokemon(string n, int h,string t) : name(n), health(h) {}
-};
+using namespace std;
 
 struct Skill {
     string name;
     int damage;
-    
     string type;
-    
-    Skill(string n, int dmg, string t) 
+
+    Skill(string n, int dmg, string t)
         : name(n), damage(dmg), type(t) {}
 };
 
+struct pokemon {
+    string name;
+    string type;
+    int health;
+    bool alive;
+    vector<Skill> skills;
 
-pokemon selectPokemon() {
+    pokemon(string n, int h,bool a, string t) : name(n), health(h), alive(a), type(t) {}
+};
+
+vector<pokemon> initializePokemons() {
     vector<pokemon> pokemons = {
-        pokemon("Pikachu", 100),
-        pokemon("Charmander", 100),
-        pokemon("Bulbasaur", 100)
+        pokemon("Pikachu", 100, true, "Electric"),
+        pokemon("Charmander", 100,true , "Fire"),
+        pokemon("Bulbasaur", 100, true ,"Grass")
     };
 
     // Adding skills to each Pokémon
-    pokemons[0].skills.push_back(Skill("Thunderbolt", 40, "Electric"));
-    pokemons[0].skills.push_back(Skill("Quick Attack", 20, "Normal"));
+    pokemons[0].skills.push_back(Skill("Thunderbolt", 15, "Electric"));
+    pokemons[0].skills.push_back(Skill("Quick Attack", 10, "Normal"));
 
-    pokemons[1].skills.push_back(Skill("Flamethrower", 50, "Fire"));
-    pokemons[1].skills.push_back(Skill("Scratch", 15, "Normal"));
+    pokemons[1].skills.push_back(Skill("Flamethrower", 15, "Fire"));
+    pokemons[1].skills.push_back(Skill("Scratch", 10, "Normal"));
 
-    pokemons[2].skills.push_back(Skill("Vine Whip", 35, "Grass"));
+    pokemons[2].skills.push_back(Skill("Vine Whip", 15, "Grass"));
     pokemons[2].skills.push_back(Skill("Tackle", 10, "Normal"));
 
-    cout << "Select your Pokémon:\n";
-    for (size_t i = 0; i < pokemons.size(); i++) {
-        cout << i + 1 << ". " << pokemons[i].name << " (Health: " << pokemons[i].health << ")\n";
-    }
+    return pokemons;
+}
 
-    int choice;
-    cout << "Enter the number of your choice: ";
+vector<pokemon> initializeComputerPokemons() {
+    vector<pokemon> computerPokemons = {
+        pokemon("Squirtle", 100, true, "Water"),
+        pokemon("Jigglypuff", 100, true, "Normal"),
+        pokemon("Meowth", 100, true, "Normal")
+    };
+
+    // Adding skills to each Pokémon
+    computerPokemons[0].skills.push_back(Skill("Water Gun", 15, "Water"));
+    computerPokemons[0].skills.push_back(Skill("Tackle", 10, "Normal"));
+
+    computerPokemons[1].skills.push_back(Skill("Sing", 15, "Normal"));
+    computerPokemons[1].skills.push_back(Skill("Double Slap", 10, "Normal"));
+
+    computerPokemons[2].skills.push_back(Skill("Scratch", 15, "Normal"));
+    computerPokemons[2].skills.push_back(Skill("Bite", 10, "Dark"));
+
+    return computerPokemons;
+}
+
+void displayPokemons(const vector<pokemon>& pokemons) {
+    cout << "Available Pokemon:\n";
+    for (int i = 0; i < pokemons.size(); i++) {
+        cout << i + 1 << ". " << pokemons[i].name << endl
+             << "Health: " << pokemons[i].health << endl
+             << "Type: " << pokemons[i].type << endl
+             << "Status: " <<(pokemons[i].alive ? "Alive" : "Dead") << endl << endl;
+    }
+}
+
+pokemon selectPokemon(const vector<pokemon>& pokemons, int &choice) {
+    cout << "Select your Pokemon by entering the corresponding number:\n";
+
     cin >> choice;
 
     if (choice < 1 || choice > pokemons.size()) {
         cout << "Invalid choice! Defaulting to Pikachu.\n";
+        choice = 1;
         return pokemons[0]; // Default to first Pokémon
     }
 
     return pokemons[choice - 1];
 }
-
-using namespace std;
 
 struct PlayerScore {
     string name;
@@ -173,34 +202,150 @@ int menu() {
     return 0; // Default return value (not used)
 }
 
-void playGame(PlayerScore &a)
+    // Function to check if all Pokémon are fainted
+bool allFainted(const vector<pokemon>& pokemons)
 {
-    bool gameOver = false;
+    for (int i = 0; i < pokemons.size(); i++) {
+        if (pokemons[i].alive) return false;  // Access each pokemon by index
+    }
+    return true;
+}
+
+void playGame(PlayerScore &a, vector<pokemon> playerPokemons, vector<pokemon> computerPokemons) {
+    bool gameOver = false, playerTurn = true;
     system("cls");
+    srand(time(0));
 
-    do
-    {
-        cout << a.name << "'s Pokemon Details " << endl; //detail pokemon player
+    int playerPokemonCount = playerPokemons.size();
+    int computerPokemonCount = computerPokemons.size();
 
-        cout << "Computer's Pokemon Details " << endl; //detail pokemon musuh
+    do {
+        // Player selects their Pokémon
+        int playerChoice;
+        do {
+            displayPokemons(playerPokemons);
+            cout << "Choose an alive Pokemon: ";
+            playerChoice = 0;
+            cin >> playerChoice;
+            if (playerChoice < 1 || playerChoice > playerPokemons.size() || !playerPokemons[playerChoice - 1].alive) {
+                cout << "Invalid choice or Pokemon is fainted. Please choose again.\n";
+            }
+        } while (playerChoice < 1 || playerChoice > playerPokemons.size() || !playerPokemons[playerChoice - 1].alive);
 
-        cout << "Damage Logs" << endl;
+        system("cls");
+        pokemon& playerPokemon = playerPokemons[playerChoice - 1];
 
-        a.score += 10;
-        gameOver = true;
+        // Computer selects its Pokémon
+        int computerChoice;
+        do {
+            computerChoice = rand() % computerPokemons.size();
+        } while (!computerPokemons[computerChoice].alive);
 
-    }while(!gameOver);
+        pokemon& computerPokemon = computerPokemons[computerChoice];
+
+        // Display selected Pokémon details
+        cout << a.name << "'s Pokemon Details " << endl;
+        cout << "Name: " << playerPokemon.name << endl
+             << "Health: " << playerPokemon.health << endl
+             << "Type: " << playerPokemon.type << endl << endl;
+
+        cout << "Computer's Pokemon Details " << endl;
+        cout << "Name: " << computerPokemon.name << endl
+             << "Health: " << computerPokemon.health << endl
+             << "Type: " << computerPokemon.type << endl << endl;
+
+        while (!gameOver) {
+            if (playerTurn) {
+                // Player's turn
+                cout << a.name << "'s turn" << endl;
+                cout << "Skills: " << endl;
+                for (size_t i = 0; i < playerPokemon.skills.size(); i++) {
+                    cout << i + 1 << ". " << playerPokemon.skills[i].name
+                         << " (Damage: " << playerPokemon.skills[i].damage << ")" << endl;
+                }
+
+                int skillChoice;
+                do {
+                    cout << "Choose skill: ";
+                    cin >> skillChoice;
+                    if (skillChoice < 1 || skillChoice > playerPokemon.skills.size()) {
+                        cout << "Invalid choice, try again." << endl;
+                    }
+                } while (skillChoice < 1 || skillChoice > playerPokemon.skills.size());
+
+                computerPokemon.health -= playerPokemon.skills[skillChoice - 1].damage;
+                updatePokemonStatus(computerPokemon);
+                cout << "You used " << playerPokemon.skills[skillChoice - 1].name << "!" << endl;
+                cout << "Computer's Pokemon Health: " << computerPokemon.health << endl;
+
+                if (!computerPokemon.alive) {
+                    computerPokemonCount--;
+                    a.score += 100;
+                    cout << "Computer's Pokemon fainted!\n";
+
+                    if (allFainted(computerPokemons)) {
+                        cout << "You defeated all the Computer's Pokemon! You win!\n";
+                        gameOver = true;
+                        break;
+                    }
+
+                    do {
+                        computerChoice = rand() % computerPokemons.size();
+                    } while (!computerPokemons[computerChoice].alive);
+                    computerPokemon = computerPokemons[computerChoice];
+                    cout << "Computer switched to: " << computerPokemon.name << endl;
+                }
+
+                playerTurn = false;
+            } else {
+                // Computer's turn
+                cout << "Computer's turn" << endl;
+                int computerSkillChoice = rand() % computerPokemon.skills.size();
+                cout << "Computer used " << computerPokemon.skills[computerSkillChoice].name << "!" << endl;
+
+                playerPokemon.health -= computerPokemon.skills[computerSkillChoice].damage;
+                updatePokemonStatus(playerPokemon);
+                cout << "Your Pokemon Health: " << playerPokemon.health << endl;
+
+                if (!playerPokemon.alive) {
+                    playerPokemonCount--;
+                    cout << "Your Pokemon fainted!\n";
+
+                    if (allFainted(playerPokemons)) {
+                        cout << "All your Pokemon have fainted! You lose!\n";
+                        gameOver = true;
+                        break;
+                    }
+
+                    do {
+                        displayPokemons(playerPokemons);
+                        cout << "Choose an alive Pokemon: ";
+                        cin >> playerChoice;
+                        if (playerChoice < 1 || playerChoice > playerPokemons.size() || !playerPokemons[playerChoice - 1].alive) {
+                            cout << "Invalid choice or Pokemon is fainted. Please choose again.\n";
+                        }
+                    } while (playerChoice < 1 || playerChoice > playerPokemons.size() || !playerPokemons[playerChoice - 1].alive);
+
+                    playerPokemon = playerPokemons[playerChoice - 1];
+                    cout << "You switched to: " << playerPokemon.name << endl;
+                }
+                playerTurn = true;
+            }
+        }
+
+    } while (!gameOver);
 
     ofstream outFile("leaderboard.txt", ios::app);
     if (outFile) {
         outFile << a.name << " " << a.score << endl;
         outFile.close();
-    }
-    else {
+    } else {
         cout << "Error saving to leaderboard!" << endl;
     }
-
 }
+
+
+
 
 void leaderBoard(PlayerScore a)
 {
@@ -243,7 +388,7 @@ void leaderBoard(PlayerScore a)
     } while(!backToMenu);
 }
 
-void backPack()
+void backPack(const vector<pokemon>& pokemons)
 {
     bool backToMenu = false;
     vector <string> backpack;
@@ -251,7 +396,9 @@ void backPack()
 
     do
     {
-
+        displayPokemons(pokemons);
+        _getch();
+        backToMenu = true;
     }while(!backToMenu);
 }
 
@@ -315,6 +462,8 @@ void printEfektivitas(float efektivitas)
 
 int main() {
     int choice;
+    vector<pokemon> pokemons = initializePokemons();
+    vector<pokemon> comPokemons = initializeComputerPokemons();
     PlayerScore player;
     player.name;
     cout << "Player Name : "; cin >> player.name; //minta nama player
@@ -329,7 +478,7 @@ int main() {
                 cout << "."; Sleep(500);
                 cout << "."; Sleep(500);
                 system("cls");
-                playGame(player);
+                playGame(player,pokemons,comPokemons);
                 break;
 
             case 2: // leaderboard
@@ -349,7 +498,7 @@ int main() {
                 cout << "."; Sleep(500);
                 cout << "."; Sleep(500);
                 system("cls");
-                backPack();
+                backPack(pokemons);
                 break;
         }
     } while (choice != 4);
