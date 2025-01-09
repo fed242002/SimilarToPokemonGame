@@ -9,6 +9,59 @@
 #include <iomanip>
 #include <cstdlib>
 
+struct pokemon {
+    string name;
+    string type;
+    int health;
+    vector<Skill> skills;
+
+    pokemon(string n, int h,string t) : name(n), health(h) {}
+};
+
+struct Skill {
+    string name;
+    int damage;
+    
+    string type;
+    
+    Skill(string n, int dmg, string t) 
+        : name(n), damage(dmg), type(t) {}
+};
+
+
+pokemon selectPokemon() {
+    vector<pokemon> pokemons = {
+        pokemon("Pikachu", 100),
+        pokemon("Charmander", 100),
+        pokemon("Bulbasaur", 100)
+    };
+
+    // Adding skills to each Pokémon
+    pokemons[0].skills.push_back(Skill("Thunderbolt", 40, "Electric"));
+    pokemons[0].skills.push_back(Skill("Quick Attack", 20, "Normal"));
+
+    pokemons[1].skills.push_back(Skill("Flamethrower", 50, "Fire"));
+    pokemons[1].skills.push_back(Skill("Scratch", 15, "Normal"));
+
+    pokemons[2].skills.push_back(Skill("Vine Whip", 35, "Grass"));
+    pokemons[2].skills.push_back(Skill("Tackle", 10, "Normal"));
+
+    cout << "Select your Pokémon:\n";
+    for (size_t i = 0; i < pokemons.size(); i++) {
+        cout << i + 1 << ". " << pokemons[i].name << " (Health: " << pokemons[i].health << ")\n";
+    }
+
+    int choice;
+    cout << "Enter the number of your choice: ";
+    cin >> choice;
+
+    if (choice < 1 || choice > pokemons.size()) {
+        cout << "Invalid choice! Defaulting to Pikachu.\n";
+        return pokemons[0]; // Default to first Pokémon
+    }
+
+    return pokemons[choice - 1];
+}
 
 using namespace std;
 
