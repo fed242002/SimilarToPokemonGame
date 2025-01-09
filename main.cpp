@@ -120,30 +120,38 @@ int menu() {
     return 0; // Default return value (not used)
 }
 
-void playGame()
+void playGame(PlayerScore &a)
 {
     bool gameOver = false;
-    PlayerScore player;
-    player.name;
-    cout << "Player Name : "; cin >> player.name;
-    player.score;
     system("cls");
 
     do
     {
-        cout << player.name << "'s Pokemon Details " << endl; //detail pokemon player
+        cout << a.name << "'s Pokemon Details " << endl; //detail pokemon player
 
         cout << "Computer's Pokemon Details " << endl; //detail pokemon musuh
 
         cout << "Damage Logs" << endl;
 
+        a.score += 10;
+        gameOver = true;
+
     }while(!gameOver);
+
+    ofstream outFile("leaderboard.txt", ios::app);
+    if (outFile) {
+        outFile << a.name << " " << a.score << endl;
+        outFile.close();
+    }
+    else {
+        cout << "Error saving to leaderboard!" << endl;
+    }
 
 }
 
-void leaderBoard()
+void leaderBoard(PlayerScore a)
 {
-    bool backToMenu = false;
+     bool backToMenu = false;
     setColor(7);
 
     do
@@ -161,12 +169,12 @@ void leaderBoard()
             PlayerScore temp;
             while (inFile >> temp.name >> temp.score)
             {
-                scores.push_back(temp);
+                scores.push_back(temp);  // Store each player and score
             }
             inFile.close();
-            sort(scores.begin(), scores.end(), compareScores);
+            sort(scores.begin(), scores.end(), compareScores); // Sort scores
 
-            cout << "\nLEADERBOARD\n";
+            cout << "\nLEADERBOARD\n" << endl;
             cout << left << setw(20) << "Player" << setw(10) << "Score" << endl;
             cout << string(30, '-') << endl;
 
@@ -179,12 +187,14 @@ void leaderBoard()
         cout << "\nPress any key to return to the menu...\n";
         _getch();
         backToMenu = true;
-    }while(!backToMenu);
+    } while(!backToMenu);
 }
 
 void backPack()
 {
     bool backToMenu = false;
+    vector <string> backpack;
+
 
     do
     {
@@ -194,6 +204,10 @@ void backPack()
 
 int main() {
     int choice;
+    PlayerScore player;
+    player.name;
+    cout << "Player Name : "; cin >> player.name; //minta nama player
+    player.score = 0; //initialize score awal jadi 0 biar tidak random
     do {
         choice = menu();
         switch (choice) {
@@ -204,7 +218,7 @@ int main() {
                 cout << "."; Sleep(500);
                 cout << "."; Sleep(500);
                 system("cls");
-                playGame();
+                playGame(player);
                 break;
 
             case 2: // leaderboard
@@ -214,7 +228,7 @@ int main() {
                 cout << "."; Sleep(500);
                 cout << "."; Sleep(500);
                 system("cls");
-                leaderBoard();
+                leaderBoard(player);
                 break;
 
             case 3: // backpack
