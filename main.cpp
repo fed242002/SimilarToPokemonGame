@@ -336,7 +336,7 @@ void playGame(PlayerScore &a, vector<pokemon> &playerPokemons, vector<pokemon> &
                 cout << "Skills: " << endl;
                 for (size_t i = 0; i < playerPokemons[playerChoice - 1].skills.size(); i++) {
                     cout << i + 1 << ". " << playerPokemons[playerChoice - 1].skills[i].name
-                         << " (Damage: " << playerPokemons[playerChoice - 1].skills[i].damage << ")" << endl;
+                         << " (Damage: " << playerPokemons[playerChoice - 1].skills[i].damage <<", Type: " << playerPokemons[playerChoice - 1].skills[i].type  << ")" << endl;
                 }
 
                 int skillChoice;
@@ -446,6 +446,7 @@ void playGame(PlayerScore &a, vector<pokemon> &playerPokemons, vector<pokemon> &
         cout << "Error saving to leaderboard!" << endl;
     }
 }
+
 
 void leaderBoard(PlayerScore a)
 {
