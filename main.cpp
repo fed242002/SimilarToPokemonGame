@@ -80,6 +80,65 @@ void displayPokemons(const vector<pokemon>& pokemons) {
     }
 }
 
+
+//Ini buat declare elemen pokemon
+const vector<string> tipe =
+{
+    "Normal", "Fire", "Water", "Electric", "Grass", "Ice",
+    "Fighting", "Poison", "Ground", "Flying", "Psychic", "Bug",
+    "Rock", "Ghost", "Dragon", "Dark", "Steel", "Fairy"
+};
+
+//Ini buat declare damage pokemon
+const vector<vector<float>> tipeChart =
+{
+   //Nor  Fir  Wat  Ele  Gra  Ice  Fig  Poi  Gro  Fly  Psy  Bug  Roc  Gho  Dra  Dar  Ste  Fai
+    {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.5, 0.0, 1.0, 1.0, 0.5, 1.0}, // Normal
+    {1.0, 0.5, 0.5, 1.0, 2.0, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 0.5, 1.0, 0.5, 1.0, 2.0, 1.0}, // Fire
+    {1.0, 2.0, 0.5, 1.0, 0.5, 1.0, 1.0, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.5, 1.0, 1.0, 1.0}, // Water
+    {1.0, 1.0, 2.0, 0.5, 0.5, 1.0, 1.0, 1.0, 0.0, 2.0, 1.0, 1.0, 1.0, 1.0, 0.5, 1.0, 1.0, 1.0}, // Electric
+    {1.0, 0.5, 2.0, 1.0, 0.5, 1.0, 1.0, 0.5, 2.0, 0.5, 1.0, 0.5, 2.0, 1.0, 0.5, 1.0, 0.5, 1.0}, // Grass
+    {1.0, 0.5, 0.5, 1.0, 2.0, 0.5, 1.0, 1.0, 2.0, 2.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 0.5, 1.0}, // Ice
+    {2.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 0.5, 1.0, 0.5, 0.5, 0.5, 2.0, 0.0, 1.0, 2.0, 2.0, 0.5}, // Fighting
+    {1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 1.0, 0.5, 0.5, 1.0, 1.0, 1.0, 0.5, 0.5, 1.0, 1.0, 0.0, 2.0}, // Poison
+    {1.0, 2.0, 1.0, 2.0, 0.5, 1.0, 1.0, 2.0, 1.0, 0.0, 1.0, 0.5, 2.0, 1.0, 1.0, 1.0, 2.0, 1.0}, // Ground
+    {1.0, 1.0, 1.0, 0.5, 2.0, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 2.0, 0.5, 1.0, 1.0, 1.0, 0.5, 1.0}, // Flying
+    {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 2.0, 1.0, 1.0, 0.5, 1.0, 1.0, 1.0, 1.0, 0.0, 0.5, 1.0}, // Psychic
+    {1.0, 0.5, 1.0, 1.0, 2.0, 1.0, 0.5, 0.5, 1.0, 0.5, 2.0, 1.0, 1.0, 0.5, 1.0, 2.0, 0.5, 0.5}, // Bug
+    {1.0, 2.0, 1.0, 1.0, 1.0, 2.0, 0.5, 1.0, 0.5, 2.0, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 0.5, 1.0}, // Rock
+    {0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 0.5, 1.0, 1.0}, // Ghost
+    {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 0.5, 0.0}, // Dragon
+    {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.5, 1.0, 1.0, 1.0, 2.0, 1.0, 1.0, 2.0, 1.0, 0.5, 0.5, 2.0}, // Dark
+    {1.0, 0.5, 0.5, 0.5, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 1.0, 1.0, 0.5, 2.0}, // Steel
+    {1.0, 0.5, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 2.0, 0.5, 1.0}  // Fairy
+};
+
+//Ini buat dapetin indeks tipenya
+int getTypeIndex(const string& type)
+{
+    for(size_t i = 0; i < tipe.size(); i++)
+    {
+        if (tipe[i] == type)
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+
+//Ini buat declare efektivitasnya pokemon
+void printEfektivitas(float efektivitas)
+{
+    if(efektivitas == 0.0)
+        cout << "0" << endl;
+    else if(efektivitas == 0.5)
+        cout << "50" << endl;
+    else if(efektivitas == 1.0)
+        cout << "100" << endl;
+    else if(efektivitas == 2.0)
+        cout << "200" << endl;
+}
+
 struct PlayerScore {
     string name;
     int score;
@@ -106,11 +165,12 @@ void gotoxy(int x, int y) {
 
 
 int menu() {
-    xy menu[5];
+    xy menu[6];
     menu[1] = { 50, 10 };
     menu[2] = { 50, 12 };
     menu[3] = { 50, 14 };
     menu[4] = { 50, 16 };
+    menu[5] = { 50, 18 };
 
 
     int cursor = 1;
@@ -155,12 +215,12 @@ int menu() {
         cout << " Welcome to";
         setColor(14); // Yellow text
         cout << " POKEMON ";
-        setColor(9);
+        setColor(7);
 
         // Menu
-        for (int i = 1; i <= 4; i++) {
+        for (int i = 1; i <= 5; i++) {
             gotoxy(menu[i].x - (cursor == i ? 2 : 0), menu[i].y);
-            cout << (cursor == i ? "> " : "  ") << (i == 1 ? "PLAY GAME" : i == 2 ? "LEADERBOARD" :i == 3 ? "BACKPACK" : "EXIT");
+            cout << (cursor == i ? "> " : "  ") << (i == 1 ? "PLAY GAME" : i == 2 ? "LEADERBOARD" : i == 3 ? "BACKPACK": i == 4 ? "HEAL ALL POKEMONS" : "EXIT");
         }
 
         // Input
@@ -169,7 +229,7 @@ int menu() {
         if (input == 'W' || input == 'w') {
             if (cursor > 1) cursor--;
         } else if (input == 'S' || input == 's') {
-            if (cursor < 4) cursor++;
+            if (cursor < 5) cursor++;
         } else if (input == '\r') { // Enter
             switch (cursor) {
                 case 1:
@@ -178,8 +238,10 @@ int menu() {
                     return 2;  // leaderboard
                 case 3:
                     return 3;  // backpack
-               case 4:
-                    return 4;  // exit
+                case 4:
+                    return 4;  // heal pokemon
+               case 5:
+                    return 5;  // exit
 
             }
         }
@@ -205,10 +267,21 @@ void updatePokemonStatus(pokemon& p) {
         p.alive = true;
     }
 }
+
+void healPokemons(vector<pokemon>& pokemons)
+{
+    for(int i = 0; i < pokemons.size();i++)
+    {
+        pokemons[i].health = 100;
+        pokemons[i].alive = true;
+    }
+}
+
 void playGame(PlayerScore &a, vector<pokemon> &playerPokemons, vector<pokemon> &computerPokemons) {
     bool gameOver = false, playerTurn = true;
     system("cls");
     srand(time(0));
+    healPokemons(computerPokemons);
 
     do {
         // Player selects their Pokémon
@@ -232,19 +305,21 @@ void playGame(PlayerScore &a, vector<pokemon> &playerPokemons, vector<pokemon> &
         } while (!computerPokemons[computerChoice].alive);
 
         while (!gameOver) {
-            // Display selected Pokémon details
-            cout << a.name << "'s Pokemon Details " << endl;
-            cout << "Name: " << playerPokemons[playerChoice - 1].name << endl
-                 << "Health: " << playerPokemons[playerChoice - 1].health << endl
-                 << "Type: " << playerPokemons[playerChoice - 1].type << endl << endl;
-
-            cout << "Computer's Pokemon Details " << endl;
-            cout << "Name: " << computerPokemons[computerChoice].name << endl
-                 << "Health: " << computerPokemons[computerChoice].health << endl
-                 << "Type: " << computerPokemons[computerChoice].type << endl << endl;
+            system("cls");
 
             if (playerTurn) {
                 // Player's turn
+                // Display selected Pokémon details
+                cout << a.name << "'s Pokemon Details " << endl;
+                cout << "Name: " << playerPokemons[playerChoice - 1].name << endl
+                     << "Health: " << playerPokemons[playerChoice - 1].health << endl
+                     << "Type: " << playerPokemons[playerChoice - 1].type << endl << endl;
+
+                cout << "Computer's Pokemon Details " << endl;
+                cout << "Name: " << computerPokemons[computerChoice].name << endl
+                     << "Health: " << computerPokemons[computerChoice].health << endl
+                     << "Type: " << computerPokemons[computerChoice].type << endl << endl;
+
                 cout << a.name << "'s turn" << endl;
                 cout << "Skills: " << endl;
                 for (size_t i = 0; i < playerPokemons[playerChoice - 1].skills.size(); i++) {
@@ -261,8 +336,10 @@ void playGame(PlayerScore &a, vector<pokemon> &playerPokemons, vector<pokemon> &
                     }
                 } while (skillChoice < 1 || skillChoice > playerPokemons[playerChoice - 1].skills.size());
 
+                //taruh disini weakness
                 computerPokemons[computerChoice].health -= playerPokemons[playerChoice - 1].skills[skillChoice - 1].damage;
-                cout << "You used " << playerPokemons[playerChoice - 1].skills[skillChoice - 1].name << "!" << endl << endl;
+                cout << "You used " << playerPokemons[playerChoice - 1].skills[skillChoice - 1].name << "!" << endl; Sleep(1000);
+                cout << "You dealt " << playerPokemons[playerChoice - 1].skills[skillChoice - 1].damage << " damage! " << endl << endl; Sleep(1000);
 
                 updatePokemonStatus(computerPokemons[computerChoice]);
                 if (!computerPokemons[computerChoice].alive) {
@@ -288,10 +365,23 @@ void playGame(PlayerScore &a, vector<pokemon> &playerPokemons, vector<pokemon> &
                 playerTurn = false;
             } else {
                 // Computer's turn
+                // Display selected Pokémon details
+                cout << a.name << "'s Pokemon Details " << endl;
+                cout << "Name: " << playerPokemons[playerChoice - 1].name << endl
+                     << "Health: " << playerPokemons[playerChoice - 1].health << endl
+                     << "Type: " << playerPokemons[playerChoice - 1].type << endl << endl;
+
+                cout << "Computer's Pokemon Details " << endl;
+                cout << "Name: " << computerPokemons[computerChoice].name << endl
+                     << "Health: " << computerPokemons[computerChoice].health << endl
+                     << "Type: " << computerPokemons[computerChoice].type << endl << endl;
+
                 cout << "Computer's turn" << endl;
                 int computerSkillChoice = rand() % computerPokemons[computerChoice].skills.size();
-                cout << "Computer used " << computerPokemons[computerChoice].skills[computerSkillChoice].name << "!" << endl << endl;
+                cout << "Computer used " << computerPokemons[computerChoice].skills[computerSkillChoice].name << "!" << endl; Sleep(1500);
+                cout << "Computer dealt " << computerPokemons[computerChoice].skills[computerSkillChoice].damage << " damage! " << endl << endl; Sleep(1000);
 
+                //taruh disini weakness
                 playerPokemons[playerChoice - 1].health -= computerPokemons[computerChoice].skills[computerSkillChoice].damage;
                 updatePokemonStatus(playerPokemons[playerChoice - 1]);
 
@@ -391,63 +481,6 @@ void backPack(const vector<pokemon>& pokemons)
     }while(!backToMenu);
 }
 
-//Ini buat declare elemen pokemon
-const vector<string> tipe =
-{
-    "Normal", "Fire", "Water", "Electric", "Grass", "Ice",
-    "Fighting", "Poison", "Ground", "Flying", "Psychic", "Bug",
-    "Rock", "Ghost", "Dragon", "Dark", "Steel", "Fairy"
-};
-
-//Ini buat declare damage pokemon
-const vector<vector<float>> tipeChart =
-{
-   //Nor  Fir  Wat  Ele  Gra  Ice  Fig  Poi  Gro  Fly  Psy  Bug  Roc  Gho  Dra  Dar  Ste  Fai
-    {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.5, 0.0, 1.0, 1.0, 0.5, 1.0}, // Normal
-    {1.0, 0.5, 0.5, 1.0, 2.0, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 0.5, 1.0, 0.5, 1.0, 2.0, 1.0}, // Fire
-    {1.0, 2.0, 0.5, 1.0, 0.5, 1.0, 1.0, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.5, 1.0, 1.0, 1.0}, // Water
-    {1.0, 1.0, 2.0, 0.5, 0.5, 1.0, 1.0, 1.0, 0.0, 2.0, 1.0, 1.0, 1.0, 1.0, 0.5, 1.0, 1.0, 1.0}, // Electric
-    {1.0, 0.5, 2.0, 1.0, 0.5, 1.0, 1.0, 0.5, 2.0, 0.5, 1.0, 0.5, 2.0, 1.0, 0.5, 1.0, 0.5, 1.0}, // Grass
-    {1.0, 0.5, 0.5, 1.0, 2.0, 0.5, 1.0, 1.0, 2.0, 2.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 0.5, 1.0}, // Ice
-    {2.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 0.5, 1.0, 0.5, 0.5, 0.5, 2.0, 0.0, 1.0, 2.0, 2.0, 0.5}, // Fighting
-    {1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 1.0, 0.5, 0.5, 1.0, 1.0, 1.0, 0.5, 0.5, 1.0, 1.0, 0.0, 2.0}, // Poison
-    {1.0, 2.0, 1.0, 2.0, 0.5, 1.0, 1.0, 2.0, 1.0, 0.0, 1.0, 0.5, 2.0, 1.0, 1.0, 1.0, 2.0, 1.0}, // Ground
-    {1.0, 1.0, 1.0, 0.5, 2.0, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 2.0, 0.5, 1.0, 1.0, 1.0, 0.5, 1.0}, // Flying
-    {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 2.0, 1.0, 1.0, 0.5, 1.0, 1.0, 1.0, 1.0, 0.0, 0.5, 1.0}, // Psychic
-    {1.0, 0.5, 1.0, 1.0, 2.0, 1.0, 0.5, 0.5, 1.0, 0.5, 2.0, 1.0, 1.0, 0.5, 1.0, 2.0, 0.5, 0.5}, // Bug
-    {1.0, 2.0, 1.0, 1.0, 1.0, 2.0, 0.5, 1.0, 0.5, 2.0, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 0.5, 1.0}, // Rock
-    {0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 0.5, 1.0, 1.0}, // Ghost
-    {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 0.5, 0.0}, // Dragon
-    {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.5, 1.0, 1.0, 1.0, 2.0, 1.0, 1.0, 2.0, 1.0, 0.5, 0.5, 2.0}, // Dark
-    {1.0, 0.5, 0.5, 0.5, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 1.0, 1.0, 0.5, 2.0}, // Steel
-    {1.0, 0.5, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 2.0, 0.5, 1.0}  // Fairy
-};
-
-//Ini buat dapetin indeks tipenya
-int getTypeIndex(const string& type)
-{
-    for(size_t i = 0; i < tipe.size(); i++)
-    {
-        if (tipe[i] == type)
-        {
-            return i;
-        }
-    }
-    return -1;
-}
-
-//Ini buat declare efektivitasnya pokemon
-void printEfektivitas(float efektivitas)
-{
-    if(efektivitas == 0.0)
-        cout << "0" << endl;
-    else if(efektivitas == 0.5)
-        cout << "50" << endl;
-    else if(efektivitas == 1.0)
-        cout << "100" << endl;
-    else if(efektivitas == 2.0)
-        cout << "200" << endl;
-}
 
 int main() {
     int choice;
@@ -489,8 +522,17 @@ int main() {
                 system("cls");
                 backPack(pokemons);
                 break;
+            case 4: // backpack
+                system("cls");
+                cout << "Healing all pokemons"; Sleep(100);
+                cout << "."; Sleep(500);
+                cout << "."; Sleep(500);
+                cout << "."; Sleep(500);
+                system("cls");
+                healPokemons(pokemons);
+                break;
         }
-    } while (choice != 4);
+    } while (choice != 5);
 
     system("cls");
     cout << "Thank You For Playing Pokemon"; Sleep(100);
