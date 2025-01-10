@@ -352,11 +352,10 @@ void playGame(PlayerScore &a, vector<pokemon> &playerPokemons, vector<pokemon> &
                 float playerSkill = getTypeSkillIndex(playerPokemons[playerChoice - 1].skills[skillChoice - 1]);
                 float computerElement = getTypePokemonIndex(computerPokemons[computerChoice]);
                 float effectivity = tipeChart[playerSkill][computerElement];
-                computerPokemons[computerChoice].health -= playerPokemons[playerChoice - 1].skills[skillChoice - 1].damage;
+                computerPokemons[computerChoice].health -= playerPokemons[playerChoice - 1].skills[skillChoice - 1].damage * effectivity ;
                 cout << "You used " << playerPokemons[playerChoice - 1].skills[skillChoice - 1].name << "!" << endl; Sleep(1000);
-                cout << effectivity;
-                printEfektivitas(effectivity);
-                cout << "You dealt " << playerPokemons[playerChoice - 1].skills[skillChoice - 1].damage << " damage! " << endl << endl; Sleep(1000);
+                printEfektivitas(effectivity); Sleep(1000);
+                cout << "You dealt " << playerPokemons[playerChoice - 1].skills[skillChoice - 1].damage * effectivity << " damage! " << endl << endl; Sleep(1000);
 
                 updatePokemonStatus(computerPokemons[computerChoice]);
                 if (!computerPokemons[computerChoice].alive) {
@@ -400,12 +399,11 @@ void playGame(PlayerScore &a, vector<pokemon> &playerPokemons, vector<pokemon> &
                 float computerSkill = getTypeSkillIndex(computerPokemons[computerChoice].skills[computerSkillChoice]);
                 float playerElement = getTypePokemonIndex(playerPokemons[playerChoice - 1]);
                 float effectivity2 = tipeChart[computerSkill][playerElement];
-                playerPokemons[playerChoice - 1].health -= computerPokemons[computerChoice].skills[computerSkillChoice].damage;
+                playerPokemons[playerChoice - 1].health -= computerPokemons[computerChoice].skills[computerSkillChoice].damage * effectivity2;
                 updatePokemonStatus(playerPokemons[playerChoice - 1]);
                 cout << "Computer used " << computerPokemons[computerChoice].skills[computerSkillChoice].name << "!" << endl; Sleep(1500);
-                cout << effectivity2;
-                printEfektivitas(effectivity2);
-                cout << "Computer dealt " << computerPokemons[computerChoice].skills[computerSkillChoice].damage << " damage! " << endl << endl; Sleep(1000);
+                printEfektivitas(effectivity2); Sleep(1000);
+                cout << "Computer dealt " << computerPokemons[computerChoice].skills[computerSkillChoice].damage * effectivity2 << " damage! " << endl << endl; Sleep(1000);
 
 
                 if (!playerPokemons[playerChoice - 1].alive) {
