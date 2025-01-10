@@ -114,11 +114,23 @@ const vector<vector<float>> tipeChart =
 };
 
 //Ini buat dapetin indeks tipenya
-int getTypeIndex(const string& type)
+int getTypePokemonIndex(pokemon &p)
 {
     for(size_t i = 0; i < tipe.size(); i++)
     {
-        if (tipe[i] == type)
+        if (tipe[i] == p.type)
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+
+int getTypeSkillIndex(Skill &s)
+{
+    for(size_t i = 0; i < tipe.size(); i++)
+    {
+        if (tipe[i] == s.type)
         {
             return i;
         }
@@ -130,13 +142,13 @@ int getTypeIndex(const string& type)
 void printEfektivitas(float efektivitas)
 {
     if(efektivitas == 0.0)
-        cout << "0" << endl;
+        cout << "No Effect" << endl;
     else if(efektivitas == 0.5)
-        cout << "50" << endl;
+        cout << "Less Effective" << endl;
     else if(efektivitas == 1.0)
-        cout << "100" << endl;
+        cout << "Effective" << endl;
     else if(efektivitas == 2.0)
-        cout << "200" << endl;
+        cout << "Super Effective" << endl;
 }
 
 struct PlayerScore {
@@ -337,8 +349,13 @@ void playGame(PlayerScore &a, vector<pokemon> &playerPokemons, vector<pokemon> &
                 } while (skillChoice < 1 || skillChoice > playerPokemons[playerChoice - 1].skills.size());
 
                 //taruh disini weakness
+                float playerSkill = getTypeSkillIndex(playerPokemons[playerChoice - 1].skills[skillChoice - 1]);
+                float computerElement = getTypePokemonIndex(computerPokemons[computerChoice]);
+                float effectivity = tipeChart[playerSkill][computerElement];
                 computerPokemons[computerChoice].health -= playerPokemons[playerChoice - 1].skills[skillChoice - 1].damage;
                 cout << "You used " << playerPokemons[playerChoice - 1].skills[skillChoice - 1].name << "!" << endl; Sleep(1000);
+                cout << effectivity;
+                printEfektivitas(effectivity);
                 cout << "You dealt " << playerPokemons[playerChoice - 1].skills[skillChoice - 1].damage << " damage! " << endl << endl; Sleep(1000);
 
                 updatePokemonStatus(computerPokemons[computerChoice]);
@@ -378,12 +395,18 @@ void playGame(PlayerScore &a, vector<pokemon> &playerPokemons, vector<pokemon> &
 
                 cout << "Computer's turn" << endl;
                 int computerSkillChoice = rand() % computerPokemons[computerChoice].skills.size();
-                cout << "Computer used " << computerPokemons[computerChoice].skills[computerSkillChoice].name << "!" << endl; Sleep(1500);
-                cout << "Computer dealt " << computerPokemons[computerChoice].skills[computerSkillChoice].damage << " damage! " << endl << endl; Sleep(1000);
 
                 //taruh disini weakness
+                float computerSkill = getTypeSkillIndex(computerPokemons[computerChoice].skills[computerSkillChoice]);
+                float playerElement = getTypePokemonIndex(playerPokemons[playerChoice - 1]);
+                float effectivity2 = tipeChart[computerSkill][playerElement];
                 playerPokemons[playerChoice - 1].health -= computerPokemons[computerChoice].skills[computerSkillChoice].damage;
                 updatePokemonStatus(playerPokemons[playerChoice - 1]);
+                cout << "Computer used " << computerPokemons[computerChoice].skills[computerSkillChoice].name << "!" << endl; Sleep(1500);
+                cout << effectivity2;
+                printEfektivitas(effectivity2);
+                cout << "Computer dealt " << computerPokemons[computerChoice].skills[computerSkillChoice].damage << " damage! " << endl << endl; Sleep(1000);
+
 
                 if (!playerPokemons[playerChoice - 1].alive) {
                     cout << "Your Pokemon fainted!\n";
